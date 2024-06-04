@@ -18,9 +18,10 @@ onnxruntime.set_default_logger_severity(3)
 warnings.filterwarnings('ignore', category=UserWarning, module='gradio')
 
 
-def run(path: str) -> Optional[bool]:
+def run(path: str, limit: float = 0.8) -> Optional[bool]:
 	nsfw.globals.skip_download = False
 	nsfw.globals.log_level = 'info'
+	nsfw.globals.probability_limit = limit
 	# execution
 	provider = "cuda"
 	providers = decode_execution_providers([provider])
