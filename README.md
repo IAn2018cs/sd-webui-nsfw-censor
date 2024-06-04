@@ -23,3 +23,27 @@ alwayson_scripts = {
   }
 }
 ```
+
+## only api
+
+```python
+url = 'http://localhost:7860/nsfw-censor'
+data = {
+    "input_image": get_base64_image('./test_img/t1.png'),
+    "threshold": 0.8
+}
+response = requests.request("POST", url,
+                            headers={
+                                'Content-Type': 'application/json'
+                            },
+                            data=json.dumps(data))
+result = response.json()
+print(response.text)
+# print
+# {"is_nsfw":false}
+is_nsfw = result['is_nsfw']
+print(f"image is nsfw: {is_nsfw}")
+# print
+# image is nsfw: False
+```
+
