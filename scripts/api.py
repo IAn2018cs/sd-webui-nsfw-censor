@@ -9,7 +9,7 @@ from modules.api.models import *
 from nsfw.core import run
 
 
-def rembg_api(_: gr.Blocks, app: FastAPI):
+def nsfw_censor_api(_: gr.Blocks, app: FastAPI):
 	@app.post("/nsfw-censor")
 	async def nsfw_censor(
 		input_image: str = Body("", title='input image'),
@@ -38,6 +38,6 @@ def rembg_api(_: gr.Blocks, app: FastAPI):
 try:
 	import modules.script_callbacks as script_callbacks
 
-	script_callbacks.on_app_started(rembg_api)
+	script_callbacks.on_app_started(nsfw_censor_api)
 except:
 	pass
