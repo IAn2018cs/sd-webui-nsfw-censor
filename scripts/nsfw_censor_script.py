@@ -34,19 +34,29 @@ class NsfwCensorScript(scripts.Script):
 					img = gr.Image(type="pil", label="nsfw picture replacement picture")
 				with gr.Row():
 					enable = gr.Checkbox(False, placeholder="enable", label="Enable")
+				min_threshold = gr.Slider(
+					label="NSFW minimum threshold",
+					value=0.8,
+					step=0.01,
+					minimum=0,
+					maximum=1
+				)
 		return [
 			img,
-			enable
+			enable,
+			min_threshold
 		]
 
 	def process(
 		self,
 		p: StableDiffusionProcessing,
 		img,
-		enable
+		enable,
+		min_threshold
 	):
 		self.replacement_img = img
 		self.enable = enable
+		self.min_threshold = min_threshold
 		if self.enable:
 			if self.replacement_img is None:
 				print(f"Please provide a replacement img")
@@ -62,12 +72,13 @@ class NsfwCensorScript(scripts.Script):
 				print(f"{sc_name} enabled, start process")
 				image: Image.Image = script_pp.image
 
-				result: Image.Image = image_analyser(
+				result, probability = image_analyser(
 					self.replacement_img,
-					image
+					image,
+					self.min_threshold
 				)
 				pp = scripts_postprocessing.PostprocessedImage(result)
-				pp.info = {}
+				pp.info = {"nsfw_probability": probability}
 				p.extra_generation_params.update(pp.info)
 				script_pp.image = pp.image
 				et = get_timestamp()

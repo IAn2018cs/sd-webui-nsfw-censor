@@ -19,7 +19,7 @@ def nsfw_censor_api(_: gr.Blocks, app: FastAPI):
 		target_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 		input_image.save(target_path)
 
-		result = run(target_path, threshold)
+		result, probability = run(target_path, threshold)
 		if result is None:
 			is_nsfw = False
 		elif result:
@@ -33,7 +33,7 @@ def nsfw_censor_api(_: gr.Blocks, app: FastAPI):
 		except Exception as e:
 			print(f"delete tmp file error: {e}")
 
-		return {"is_nsfw": is_nsfw}
+		return {"is_nsfw": is_nsfw, "probability": probability}
 
 
 try:

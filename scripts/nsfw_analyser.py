@@ -1,6 +1,7 @@
 # coding=utf-8
 import os
 import tempfile
+from typing import Tuple
 
 from PIL import Image
 
@@ -9,8 +10,9 @@ from nsfw.core import run
 
 def image_analyser(
 	replacement_img: Image.Image,
-	target_img: Image.Image
-) -> Image.Image:
+	target_img: Image.Image,
+	min_threshold: float
+) -> Tuple[Image.Image, float]:
 	if isinstance(replacement_img, str):  # source_img is a base64 string
 		import base64, io
 		if 'base64,' in replacement_img:  # check if the base64 string has a data URL scheme
@@ -24,7 +26,7 @@ def image_analyser(
 	target_path = tempfile.NamedTemporaryFile(delete=False, suffix=".png").name
 	target_img.save(target_path)
 
-	result = run(target_path)
+	result, probability = run(target_path, min_threshold)
 	if result is None:
 		result_image = target_img
 	elif result:
@@ -38,4 +40,4 @@ def image_analyser(
 	except Exception as e:
 		print(f"delete tmp file error: {e}")
 
-	return result_image
+	return result_image, probability

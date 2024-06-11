@@ -18,7 +18,9 @@ alwayson_scripts = {
       # nsfw picture replacement picture
       get_base64_image('./replacement.png'),
       # Enable
-      True
+      True,
+      # nsfw minimum threshold
+      0.8
     ]
   }
 }

@@ -57,13 +57,14 @@ def pre_check() -> bool:
 
 
 def analyse_frame(vision_frame: VisionFrame) -> bool:
+	return frame_nsfw_probability(vision_frame) > nsfw.globals.probability_limit
+
+
+def frame_nsfw_probability(vision_frame: VisionFrame) -> float:
 	content_analyser = get_content_analyser()
 	vision_frame = prepare_frame(vision_frame)
-	probability = content_analyser.run(None,
-									   {
-										   content_analyser.get_inputs()[0].name: vision_frame
-									   })[0][0][1]
-	return probability > nsfw.globals.probability_limit
+	probability = content_analyser.run(None, {content_analyser.get_inputs()[0].name: vision_frame})[0][0][1]
+	return probability
 
 
 def prepare_frame(vision_frame: VisionFrame) -> VisionFrame:
@@ -77,3 +78,9 @@ def prepare_frame(vision_frame: VisionFrame) -> VisionFrame:
 def analyse_image(image_path: str) -> bool:
 	frame = read_image(image_path)
 	return analyse_frame(frame)
+
+
+@lru_cache(maxsize=None)
+def image_nsfw_probability(image_path: str) -> float:
+	frame = read_image(image_path)
+	return frame_nsfw_probability(frame)
