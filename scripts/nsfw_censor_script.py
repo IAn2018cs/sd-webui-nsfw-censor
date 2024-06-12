@@ -11,7 +11,7 @@ from scripts.nsfw_analyser import image_analyser
 from scripts.nsfw_utils import get_timestamp
 
 sc_name = "NSFW-CENSOR"
-version = "1.0"
+version = "1.0.1"
 
 print(
 	f"[-] NSFW-CENSOR initialized. version: {version}"
